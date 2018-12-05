@@ -1,0 +1,10 @@
+var mongoose = require('mongoose');
+let USERNAME = 'nncthang';
+let PASSWORD = 'nncthang1994';
+let API = 'ds131313.mlab.com:31313';
+let DB_NAME = 'thecoffeehouse';
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+exports.mongoose = mongoose;
+exports.database = mongoose.createConnection(`mongodb://${USERNAME}:${PASSWORD}@${API}/${DB_NAME}`);
