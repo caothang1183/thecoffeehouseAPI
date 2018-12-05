@@ -1,6 +1,4 @@
 var AccountController = require('../controllers/AccountController');
-var bodyParser = require('body-parser');
-var AccountForm = bodyParser.urlencoded({ extended: false });
 
 module.exports = function (app, verifyToken) {
 
@@ -16,7 +14,10 @@ module.exports = function (app, verifyToken) {
     })
 
     app.post('/api/accounts/', verifyToken, function (req, res) {
-        return AccountController.insert(req, res)
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return AccountController.insert(req, res)
+        });
     })
 
 }
