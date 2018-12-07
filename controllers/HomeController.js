@@ -1,3 +1,5 @@
-exports.View = (req, res) => {
-    return res.render('server/index');
-}
+module.exports = function (app) {
+    app.get('/api', function (req, res) {
+        return res.render('server/index');
+    });
+};
