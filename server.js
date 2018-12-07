@@ -39,32 +39,24 @@ app.get('*', (req, res) => {
 
 app.post('/api/auth', auth, function (req, res) {
     Account.find({ username: req.body.username }, function (error, account) {
-        if (account.length > 0) {
-            if (bcrypt.compareSync(req.body.password, account[0].password)) {
-                jwt.sign({ account }, 'secretKey', { expiresIn: '86400s' }, (err, token) => {
-                    res.json({
-                        token: `WebToken|${token}`
-                    });
-                })
-            } else res.sendStatus(403);
-        } else res.json({ message: 'user is not exist' });
+        if (account.length < 0) return res.json({ message: 'user is not exist' });
+        if (account[0].role.id !== 1) return res.json({ message: 'account does not have permition' });
+        if (bcrypt.compareSync(req.body.password, account[0].password)) {
+            jwt.sign({ account }, 'secretKey', { expiresIn: '86400s' }, (err, token) => {
+                res.json({ token: `WebToken|${token}` });
+            })
+        } else res.sendStatus(403);
     });
 });
 
 function verifyToken(req, res, next) {
-    // Format JSON Bearer <access_token>
-    const bearerHeader = req.headers['token'];
-    if (typeof bearerHeader !== 'undefined') {
-        // Change subfix Bearer in to what you want
-        bearerHeader.replace('Bearer', 'WebToken|')
-        // Split and get token
-        const bearer = bearerHeader.split('|');
-        const bearerToken = bearer[1];
-        req.token = bearerToken;
-        next();
-    } else {
-        res.sendStatus(403);
-    }
+    const bearerHeader = req.headers['token']; // Format JSON Bearer <access_token>
+    if (typeof bearerHeader === 'undefined') return res.sendStatus(403);
+    bearerHeader.replace('Bearer', 'WebToken|'); // Change subfix Bearer in to what you want
+    const bearer = bearerHeader.split('|'); // Split and get token
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
 }
 
 app.listen(port, () => console.log('[TheCoffeeHouse API] Running on port :' + port));
