@@ -5,10 +5,13 @@ var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 var bodyParser = require('body-parser');
 
-// Controller
-var HomeController = require('./controllers/HomeController');
-var ProductController = require('./controllers/ProductController');
-var AccountController = require('./controllers/AccountController');
+// Routers
+var HomeRouter = require('./routers/HomeRouter');
+var HomeRouter = HomeRouter(app);
+var ProductRouter = require('./routers/ProductRouter');
+var ProductRouter = ProductRouter(app, verifyToken);
+var AccountRouter = require('./routers/AccountRouter');
+var AccountRouter = AccountRouter(app, verifyToken);
 
 // Models
 var Account = require('./models/Account');
@@ -16,6 +19,8 @@ var Account = require('./models/Account');
 var auth = bodyParser.urlencoded({ extended: false });
 app.set('view engine', 'ejs');
 app.use('/assets/', express.static('public/assets/'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -24,12 +29,6 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', true);
     next();
 });
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-var HomeController = HomeController(app);
-var ProductController = ProductController(app, verifyToken);
-var AccountController = AccountController(app, verifyToken);
-
 
 app.get('*', (req, res) => {
     res.status(404).json({

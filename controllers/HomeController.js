@@ -1,5 +1,3 @@
-module.exports = function (app) {
-    app.get('/api', function (req, res) {
-        return res.render('server/index');
-    });
-};
+exports.View = (req, res) => {
+    return res.render('server/index');
+}

@@ -5,6 +5,7 @@ var autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(db);
 
 var productSchema = new mongoose.Schema({
+    id: Number,
     name: {
         type: String,
         require: true,
@@ -35,18 +36,22 @@ var productSchema = new mongoose.Schema({
     },
     images: [
         {
+            id: Number,
             url: String,
             status: Boolean
         },
         {
+            id: Number,
             url: String,
             status: Boolean
         },
         {
+            id: Number,
             url: String,
             status: Boolean
         },
         {
+            id: Number,
             url: String,
             status: Boolean
         }
