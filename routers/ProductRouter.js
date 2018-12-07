@@ -3,18 +3,12 @@ var jwt = require('jsonwebtoken');
 
 module.exports = function (app, verifyToken) {
 
-    app.get('/api/products', verifyToken, function (req, res) {
-        jwt.verify(req.token, 'secretKey', (errors) => {
-            if (errors) return res.sendStatus(403);
-            return productController.findAll(req, res);
-        });
+    app.get('/api/products', function (req, res) {
+        return productController.findAll(req, res);
     });
 
-    app.get('/api/products/:id', verifyToken, function (req, res) {
-        jwt.verify(req.token, 'secretKey', (errors) => {
-            if (errors) return res.sendStatus(403);
-            return productController.findById(req, res);
-        });
+    app.get('/api/products/:id', function (req, res) {
+        return productController.findById(req, res);
     });
 
     app.post('/api/products', verifyToken, function (req, res) {
@@ -38,18 +32,12 @@ module.exports = function (app, verifyToken) {
         });
     });
 
-    app.get('/api/products/category/:id', verifyToken, function (req, res) {
-        jwt.verify(req.token, 'secretKey', (errors) => {
-            if (errors) return res.sendStatus(403);
-            return productController.findByIdCategory(req, res);
-        });
+    app.get('/api/products/category/:id', function (req, res) {
+        return productController.findByIdCategory(req, res);
     });
 
-    app.get('/api/products/brand/:id', verifyToken, function (req, res) {
-        jwt.verify(req.token, 'secretKey', (errors) => {
-            if (errors) return res.sendStatus(403);
-            return productController.findByIdBrand(req, res);
-        });
+    app.get('/api/products/brand/:id', function (req, res) {
+        return productController.findByIdBrand(req, res);
     });
 
 };
