@@ -1,19 +1,26 @@
 var port = process.env.PORT || 3000;
 var express = require('express');
 var app = express();
-var HomeRouter = require('./routers/HomeRouter');
-var ProductRouter = require('./routers/ProductRouter');
-var AccountRouter = require('./routers/AccountRouter');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 var bodyParser = require('body-parser');
 
-var Account = require('./models/Account'); 
+// Routers
+var HomeRouter = require('./routers/HomeRouter');
+var HomeRouter = HomeRouter(app);
+var ProductRouter = require('./routers/ProductRouter');
+var ProductRouter = ProductRouter(app, verifyToken);
+var AccountRouter = require('./routers/AccountRouter');
+var AccountRouter = AccountRouter(app, verifyToken);
 
+// Models
+var Account = require('./models/Account');
 
 var auth = bodyParser.urlencoded({ extended: false });
 app.set('view engine', 'ejs');
 app.use('/assets/', express.static('public/assets/'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -22,13 +29,6 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', true);
     next();
 });
-
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use('/api', HomeRouter);
-
-app.use('/api/products', ProductRouter);
 
 app.get('*', (req, res) => {
     res.status(404).json({
@@ -43,11 +43,11 @@ app.post('/api/auth', auth, function (req, res) {
             if (bcrypt.compareSync(req.body.password, account[0].password)) {
                 jwt.sign({ account }, 'secretKey', { expiresIn: '86400s' }, (err, token) => {
                     res.json({
-                        token: token
+                        token: `WebToken|${token}`
                     });
                 })
             } else res.sendStatus(403);
-        } else res.json({ message: 'User is not exist' });
+        } else res.json({ message: 'user is not exist' });
     });
 });
 
@@ -66,7 +66,5 @@ function verifyToken(req, res, next) {
         res.sendStatus(403);
     }
 }
-
-var AccountRouter = AccountRouter(app, verifyToken);
 
 app.listen(port, () => console.log('[TheCoffeeHouse API] Running on port :' + port));

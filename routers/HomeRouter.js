@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+var HomeController = require('../controllers/HomeController');
 
-router.get('/', function (req, res, next) {
-    res.render('server/index');
-});
+module.exports = function (app) {
 
-module.exports = router;
+    app.get('/api', function (req, res) {
+            return HomeController.View(req, res);
+    });
 
+};

@@ -1,19 +1,55 @@
-var express = require('express');
-var router = express.Router();
 var productController = require('../controllers/ProductController');
+var jwt = require('jsonwebtoken');
 
-router.route('/').get(productController.findAll);
+module.exports = function (app, verifyToken) {
 
-router.route('/:id').get(productController.findById);
+    app.get('/api/products', verifyToken, function (req, res) {
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return productController.findAll(req, res);
+        });
+    });
 
-router.route('/').post(productController.insert);
+    app.get('/api/products/:id', verifyToken, function (req, res) {
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return productController.findById(req, res);
+        });
+    });
 
-router.route('/:id').post(productController.update);
+    app.post('/api/products', verifyToken, function (req, res) {
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return productController.insert(req, res);
+        });
+    });
 
-router.route('/:id').delete(productController.delete);
+    app.post('/api/products/:id', verifyToken, function (req, res) {
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return productController.update(req, res);
+        });
+    });
 
-router.route('/category/:id').get(productController.findByIdCategory);
+    app.delete('/api/products/:id', verifyToken, function (req, res) {
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return productController.delete(req, res);
+        });
+    });
 
-router.route('/brand/:id').get(productController.findByIdBrand);
+    app.get('/api/products/category/:id', verifyToken, function (req, res) {
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return productController.findByIdCategory(req, res);
+        });
+    });
 
-module.exports = router;
+    app.get('/api/products/brand/:id', verifyToken, function (req, res) {
+        jwt.verify(req.token, 'secretKey', (errors) => {
+            if (errors) return res.sendStatus(403);
+            return productController.findByIdBrand(req, res);
+        });
+    });
+
+};
