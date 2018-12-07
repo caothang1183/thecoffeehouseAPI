@@ -41,11 +41,10 @@ app.post('/api/auth', auth, function (req, res) {
     Account.find({ username: req.body.username }, function (error, account) {
         if (account.length < 0) return res.json({ message: 'user is not exist' });
         if (account[0].role.id !== 1) return res.json({ message: 'account does not have permition' });
-        if (bcrypt.compareSync(req.body.password, account[0].password)) {
-            jwt.sign({ account }, 'secretKey', { expiresIn: '86400s' }, (err, token) => {
-                res.json({ token: `WebToken|${token}` });
-            })
-        } else res.sendStatus(403);
+        if (!bcrypt.compareSync(req.body.password, account[0].password)) return res.sendStatus(403);
+        jwt.sign({ account }, 'secretKey', { expiresIn: '86400s' }, (err, token) => {
+            res.json({ token: `WebToken|${token}` });
+        })
     });
 });
 
