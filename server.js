@@ -7,11 +7,8 @@ var bodyParser = require('body-parser');
 
 // Routers
 var HomeRouter = require('./routers/HomeRouter');
-var HomeRouter = HomeRouter(app);
 var ProductRouter = require('./routers/ProductRouter');
-var ProductRouter = ProductRouter(app, verifyToken);
 var AccountRouter = require('./routers/AccountRouter');
-var AccountRouter = AccountRouter(app, verifyToken);
 
 // Models
 var Account = require('./models/Account');
@@ -19,9 +16,6 @@ var Account = require('./models/Account');
 var auth = bodyParser.urlencoded({ extended: false });
 app.set('view engine', 'ejs');
 app.use('/assets/', express.static('public/assets/'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
@@ -29,6 +23,13 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', true);
     next();
 });
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+var HomeRouter = HomeRouter(app);
+var ProductRouter = ProductRouter(app, verifyToken);
+var AccountRouter = AccountRouter(app, verifyToken);
 
 app.get('*', (req, res) => {
     res.status(404).json({

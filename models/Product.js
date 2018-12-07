@@ -1,8 +1,6 @@
 var connect = require('../utils/database');
 var db = connect.database;
 var mongoose = connect.mongoose;
-var autoIncrement = require('mongoose-auto-increment');
-autoIncrement.initialize(db);
 
 var productSchema = new mongoose.Schema({
     id: Number,
@@ -65,9 +63,5 @@ var productSchema = new mongoose.Schema({
 
 var Product = db.model('Product', productSchema);
 
-productSchema.plugin(autoIncrement.plugin, {
-    model: 'Product',
-    field: 'id'
-});
 
 module.exports = Product;

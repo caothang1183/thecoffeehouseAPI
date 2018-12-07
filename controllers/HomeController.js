@@ -1,3 +1,3 @@
-exports.View = (req, res) => {
+exports.index = (req, res) => {
     return res.render('server/index');
 }
